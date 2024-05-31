@@ -1,0 +1,18 @@
+{
+    "dependencies": {
+        "express": "^4.17.1",
+        "nodemon": "^2.0.4"
+    },
+    "type": "module",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "node --watch index.js"
+    },
+    "name": "ejercicio-lectura",
+    "version": "1.0.0",
+    "main": "guitarras.js",
+    "devDependencies": {},
+    "author": "MacarenaCavieres",
+    "license": "ISC",
+    "description": ""
+}
