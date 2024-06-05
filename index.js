@@ -13,7 +13,7 @@ const hateoas = (guitarras) => {
     return guitarras.map((item) => {
         return {
             name: item.name,
-            href: `http://localhost:3000/guitarra/${item.id}`,
+            href: `http://localhost:3000/api/v2/guitarras/${item.id}`,
         };
     });
 };
@@ -58,6 +58,56 @@ const orderValues = (order) => {
         : false;
 };
 
-app.get("/api/v2/guitarras/:value", (req, res) => {});
+app.get("/api/v2/guitarra", (req, res) => {
+    const { values } = req.query;
+    if (values === "asc" || values === "desc") {
+        res.send(orderValues(values));
+    } else {
+        return res.status(400).send("Parámetro no válido");
+    }
+});
+
+const fieldSelect = (guitarra, fields) => {
+    for (let prop in guitarra) {
+        if (!fields.includes(prop)) delete guitarra[prop];
+    }
+    return guitarra;
+};
+
+app.get("/api/v2/guitarra/:id", (req, res) => {
+    const { id } = req.params;
+    const { fields } = req.query;
+
+    if (fields) return res.send({ guitarra: fieldSelect(guitarra(id), fields.split(",")) });
+
+    res.send({
+        guitarra: guitarra(id),
+    });
+});
+
+const hateoasv2 = (guitarras) => {
+    return guitarras.map((item) => {
+        return {
+            name: item.name,
+            href: `http://localhost:3000/api/v2/guitarras/${item.id}`,
+        };
+    });
+};
+
+app.get("/api/v2/guitar", (req, res) => {
+    const { values } = req.query;
+
+    if (values == "asc") return res.send(orderValues("asc"));
+    if (values == "desc") return res.send(orderValues("desc"));
+
+    if (req.query.page) {
+        const { page } = req.query;
+
+        return res.send({ guitarras: hateoasv2(guitarras).slice(page * 2 - 2, page * 2) });
+    }
+    res.send({
+        guitarras: hateoasv2(guitarras),
+    });
+});
 
 app.listen(3000, () => console.log("Servidor encendido!", `http://localhost:3000`));
